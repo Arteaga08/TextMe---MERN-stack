@@ -1,15 +1,17 @@
 import NavBar from "./components/NavBar";
+
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import HomePage from "./pages/HomePage";
 
-import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "./store/useAuthStore";
 
 import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -50,6 +52,8 @@ const App = () => {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
       </Routes>
+
+      <Toaster />
     </div>
   );
 };
