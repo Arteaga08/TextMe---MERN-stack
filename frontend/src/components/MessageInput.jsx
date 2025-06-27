@@ -6,12 +6,12 @@ import toast from "react-hot-toast";
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useState(null);
-  const { sendMessage } = useChatStore;
+  const fileInputRef = useRef(null);
+  const { sendMessage } = useChatStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (!file.type.startWith("image/")) {
+    if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
@@ -23,9 +23,30 @@ const MessageInput = () => {
     reader.readAsDataURL(file);
   };
 
-  const removeImage = () => {};
+  const removeImage = () => {
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
-  const handleSendMessage = async (e) => {};
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!text.trim() && !imagePreview) return;
+
+    try {
+      
+      console.log("Enviando imagen:", imagePreview?.slice(0, 100));
+      await sendMessage({
+        text: text.trim(),
+        image: imagePreview,
+      });
+
+      setText("");
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (error) {
+      console.error("Failed to send message: ", error);
+    }
+  };
 
   return (
     <div className="p-4 w-full">
